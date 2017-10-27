@@ -5,7 +5,8 @@
 // @namespace      http://github.com/beporter/slack-custom-emoji-transfer
 // @version        0.0.1
 // @icon           http://tampermonkey.net/favicon.ico
-// @match          https://*.slack.com/admin/emoji
+// @match          https://*.slack.com/admin/emoji*
+// @match          https://*.slack.com/customize/emoji*
 // @grant          none
 // @run-at         document-end
 // @require        https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.js
@@ -18,12 +19,36 @@
   'use strict'
 
 	var emojiRows = $('tr.emoji_row');
-	var images = [];
-	var aliases = [];
+	var images = {};
+	var aliases = {};
+
+	emojiRows.each(function (key, item) {
+        var name = $('td[headers=custom_emoji_name]', item)[0].innerText;
+        var text = $('td[headers=custom_emoji_type]', item)[0].innerText;
+        var nameClean = name.match(/:([\w-]+):/)[1].trim();
+
+        if (text.match(/alias/i)) {
+            var textClean = text.match(/:([\w-]+):/)[1].trim();
+            aliases[textClean] = nameClean;
+        } else {
+            images[nameClean] = $('td[headers=custom_emoji_image] span').data('original');
+        }
+	});
 
 
+    aliases.forEach(function (item) {
+        // write to a "text file"
+    });
+    // add the text file to a zip
 
+    images.forEach(function (item) {
+        // add to a zip
+    });
 
+console.log({
+    aliases,
+    images
+});
 
   // Code...
 
@@ -37,13 +62,13 @@
 //
 // x Create two storage objects: `images` and `aliases`.
 //
-// Iterate over the list:
+// x Iterate over the list:
 //
-// * Examine `td.custom_emoji_type.text()` and if it matches `/^Alias for /`:
+// x Examine `td.custom_emoji_type.text()` and if it matches `/^Alias for /`:
 //   * Use the final `:word:` from `td.custom_emoji_type.text()` (the alias target) as the key.
 //   * Use `td.custom_emoji_name.text()` (the "name" of the alias) as the value.
 //   * Store the pair in `aliases`.
-// * Else:
+// x Else:
 //   * Store `td.custom_emoji_name.text()` (the "name" the custom emoji) as the key.
 //   * Extract `data-original` (the image source URL) as the value.
 //   * Store the pair in `images`.
