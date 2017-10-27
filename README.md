@@ -4,9 +4,11 @@ Allows for backup (and maybe eventually re-upload/sync) of a team's custom Slack
 
 ## Plan for Download/Backup
 
-Write as a Greasemonkey/Tampermonkey JS script that runs in-browser (at least for download.)
+x Write as a Greasemonkey/Tampermonkey JS script that runs in-browser (at least for download.)
 
-Import jQuery into the script for keeping things concise.
+x Import jQuery into the script for keeping things concise.
+
+x Import jszip library.
 
 Store every DOM node matching `tr.emoji_row` into an array.
 
